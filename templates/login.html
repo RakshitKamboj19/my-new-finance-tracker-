@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Login | FinSmart{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-8 col-lg-5">
+        <div class="surface-card p-4 p-lg-5 interactive-card">
+            <div class="text-center mb-4">
+                <div class="brand-mark mx-auto mb-3"><i class="bi bi-shield-lock"></i></div>
+                <h2 class="fw-bold">Welcome back</h2>
+                <p class="section-subtitle">Log in to review your dashboard, expenses, and AI insights.</p>
+            </div>
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn-soft-primary w-100 mt-2">Login</button>
+            </form>
+            <p class="text-center mt-4 mb-0 text-muted">
+                New here? <a href="{% url 'signup' %}" class="fw-semibold">Create an account</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

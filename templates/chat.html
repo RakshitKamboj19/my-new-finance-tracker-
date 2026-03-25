@@ -1,0 +1,34 @@
+﻿{% extends "base.html" %}
+
+{% block title %}AI Chat | FinSmart{% endblock %}
+{% block page_heading %}AI Chat Assistant{% endblock %}
+{% block page_subheading %}Ask finance questions about your spending, goals, recurring costs, or beginner investing decisions.{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-10">
+        <div class="surface-card p-4 interactive-card mb-4">
+            <form method="post" class="form-grid">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn-soft-success"><i class="bi bi-send me-2"></i>Ask Assistant</button>
+            </form>
+        </div>
+        <div class="surface-card p-4 interactive-card">
+            <h3 class="section-title mb-3">Chat History</h3>
+            {% if history %}
+                <div class="chat-stack">
+                    {% for message in history %}
+                        <div class="chat-bubble {% if message.role == 'assistant' %}assistant{% else %}user{% endif %}">
+                            <div class="small text-muted mb-1">{{ message.role|title }} - {{ message.created_at }}</div>
+                            <div>{{ message.message|linebreaksbr }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state py-4">No chat history yet. Ask your first finance question.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

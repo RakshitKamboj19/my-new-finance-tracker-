@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} | FinSmart{% endblock %}
+{% block page_heading %}{{ page_title }}{% endblock %}
+{% block page_subheading %}Add expenses manually or scan a bill image to autofill the form.{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-xl-7">
+        <div class="surface-card form-card p-4 p-lg-5 interactive-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="section-title mb-1">{{ page_title }}</h2>
+                    <p class="section-subtitle">Keep your dashboard accurate with clean, complete entries.</p>
+                </div>
+                <a href="{% url 'dashboard' %}" class="btn-outline-modern"><i class="bi bi-arrow-left me-2"></i>Dashboard</a>
+            </div>
+            <form method="post" class="form-grid">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn-soft-primary mt-2"><i class="bi bi-check2-circle me-2"></i>Save Expense</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-xl-5">
+        <div class="surface-card p-4 interactive-card mb-4">
+            <h3 class="section-title mb-2">Expense Scanner (OCR-ready)</h3>
+            <p class="section-subtitle mb-3">Upload a bill image to extract amount, date, category, and description.</p>
+            <form method="post" action="{% url 'scan_expense' %}" enctype="multipart/form-data" class="form-grid">
+                {% csrf_token %}
+                {{ scan_form.as_p }}
+                <button type="submit" class="btn-soft-success"><i class="bi bi-camera me-2"></i>Scan Receipt</button>
+            </form>
+        </div>
+        <div class="surface-card p-4 interactive-card">
+            <h3 class="section-title mb-3">Category Guide</h3>
+            <ul class="list-clean">
+                <li><span class="category-pill"><i class="bi bi-cup-hot"></i>Food</span><span class="small text-muted">Meals, snacks, coffee</span></li>
+                <li><span class="category-pill"><i class="bi bi-bus-front"></i>Travel</span><span class="small text-muted">Bus, rides, fuel</span></li>
+                <li><span class="category-pill"><i class="bi bi-bag"></i>Shopping</span><span class="small text-muted">Items, fashion, extras</span></li>
+                <li><span class="category-pill"><i class="bi bi-receipt"></i>Bills</span><span class="small text-muted">Utilities, rent share, subscriptions</span></li>
+                <li><span class="category-pill"><i class="bi bi-three-dots"></i>Other</span><span class="small text-muted">Anything outside the main buckets</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Reports | FinSmart{% endblock %}
+{% block page_heading %}Monthly Reports{% endblock %}
+{% block page_subheading %}Review your monthly finance report, summaries, breakdowns, and downloadable PDF exports.{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="surface-card p-4 interactive-card mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="section-title mb-1">Monthly Financial Report</h3>
+                    <p class="section-subtitle">A high-level summary of your current month.</p>
+                </div>
+                <a href="{% url 'download_report_pdf' %}" class="btn-soft-primary"><i class="bi bi-file-earmark-pdf me-2"></i>Download PDF</a>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6"><div class="stat-mini"><span>Total Spending</span><strong>Rs. {{ report.total_spending }}</strong></div></div>
+                <div class="col-md-6"><div class="stat-mini"><span>Budget</span><strong>Rs. {{ report.budget }}</strong></div></div>
+                <div class="col-md-6"><div class="stat-mini"><span>Highest Category</span><strong>{{ report.highest_category }}</strong></div></div>
+                <div class="col-md-6"><div class="stat-mini"><span>Recurring Cost</span><strong>Rs. {{ report.recurring_total }}</strong></div></div>
+            </div>
+        </div>
+        <div class="surface-card p-4 interactive-card">
+            <h3 class="section-title mb-3">Category Breakdown</h3>
+            {% for category, amount in report.category_breakdown.items %}
+                <div class="d-flex justify-content-between border-bottom pb-2 mb-2"><span>{{ category }}</span><strong>Rs. {{ amount }}</strong></div>
+            {% empty %}
+                <div class="empty-state py-4">No expense data available for this report.</div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="surface-card ai-highlight p-4 interactive-card mb-4">
+            <h3 class="section-title mb-3">AI Summary</h3>
+            <div class="ai-advice-box">{{ ai_summary|linebreaksbr }}</div>
+        </div>
+        <div class="surface-card p-4 interactive-card">
+            <h3 class="section-title mb-3">Savings Summary</h3>
+            <p class="mb-2">{{ report.savings_summary }}</p>
+            <div class="small text-muted">Use this report to review overspending, recurring bills, and savings opportunities each month.</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

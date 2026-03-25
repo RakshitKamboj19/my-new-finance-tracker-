@@ -1,0 +1,203 @@
+﻿{% extends "base.html" %}
+
+{% block content %}
+<section id="home" class="surface-card hero-panel p-4 p-lg-5 mb-4 overflow-hidden landing-anchor-target">
+    <div class="hero-svg-wrap" aria-hidden="true">
+        <svg class="hero-svg hero-svg-back" viewBox="0 0 1440 620" preserveAspectRatio="none">
+            <g class="hero-line-group hero-line-group-a">
+                <path d="M-120 120 C 160 40, 420 210, 700 130 S 1220 40, 1560 150" />
+                <path d="M-80 220 C 180 130, 430 290, 720 220 S 1230 120, 1540 250" />
+                <path d="M-140 320 C 110 240, 420 390, 730 320 S 1240 230, 1570 350" />
+            </g>
+            <g class="hero-line-group hero-line-group-b">
+                <path d="M-100 170 C 140 80, 410 250, 680 180 S 1180 80, 1520 210" />
+                <path d="M-130 280 C 150 200, 470 350, 760 280 S 1260 180, 1590 300" />
+            </g>
+        </svg>
+        <svg class="hero-svg hero-svg-front" viewBox="0 0 1440 620" preserveAspectRatio="none">
+            <g class="hero-pulse-group">
+                <path d="M-90 400 C 210 280, 470 470, 760 390 S 1240 300, 1560 430" />
+                <path d="M-110 470 C 170 360, 450 540, 760 470 S 1240 380, 1580 500" />
+            </g>
+        </svg>
+    </div>
+    <div class="hero-motion hero-motion-wave" aria-hidden="true"></div>
+    <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+    <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+
+    <div class="hero-content row align-items-center g-4">
+        <div class="col-lg-7">
+            <span class="badge bg-light text-primary rounded-pill px-3 py-2 mb-3">Track with TeckWay</span>
+            <h1 class="display-5 fw-bold mb-2">TeckWay MoneyTracker</h1>
+            <p class="lead opacity-75 mb-2">Track with TeckWay</p>
+            <p class="opacity-75 mb-4">Smart Financial Decisions Powered by AI</p>
+            <div class="d-flex flex-wrap gap-3 hero-actions">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg rounded-pill px-4">Open Dashboard</a>
+                {% else %}
+                    <a href="{% url 'signup' %}" class="btn btn-light btn-lg rounded-pill px-4">Create Account</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg rounded-pill px-4">Login</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="surface-card p-4 text-dark hero-feature-card">
+                <h3 class="section-title mb-3">Inside TeckWay MoneyTracker</h3>
+                <ul class="list-clean">
+                    <li><i class="bi bi-check-circle-fill text-success"></i><span>Expense tracking and budget control</span></li>
+                    <li><i class="bi bi-check-circle-fill text-success"></i><span>Reports, exports, and analytics</span></li>
+                    <li><i class="bi bi-check-circle-fill text-success"></i><span>Saving goals and achievement tracking</span></li>
+                    <li><i class="bi bi-check-circle-fill text-success"></i><span>AI advice, OCR-ready scanning, and chat</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="how-it-works" class="landing-section landing-section-soft landing-anchor-target">
+    <div class="landing-section-head text-center mx-auto">
+        <span class="landing-eyebrow">How it works</span>
+        <h2 class="landing-title">Simple habits, smarter money decisions</h2>
+        <p class="landing-copy">TeckWay MoneyTracker helps students and young professionals build a consistent financial routine in just a few taps.</p>
+    </div>
+    <div class="row g-4 mt-1">
+        <div class="col-md-4">
+            <div class="surface-card landing-card h-100 text-center">
+                <div class="landing-icon landing-icon-primary mx-auto"><i class="bi bi-wallet2"></i></div>
+                <h3 class="landing-card-title">Add expenses</h3>
+                <p class="landing-card-copy">Log spending quickly, organize categories, and keep your day-to-day finances updated without friction.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="surface-card landing-card h-100 text-center">
+                <div class="landing-icon landing-icon-success mx-auto"><i class="bi bi-stars"></i></div>
+                <h3 class="landing-card-title">Get AI insights</h3>
+                <p class="landing-card-copy">Turn raw transactions into useful recommendations, alerts, and practical weekly money guidance.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="surface-card landing-card h-100 text-center">
+                <div class="landing-icon landing-icon-warning mx-auto"><i class="bi bi-piggy-bank"></i></div>
+                <h3 class="landing-card-title">Save money</h3>
+                <p class="landing-card-copy">Track progress toward better habits, reduce wasteful spending, and keep your goals moving forward.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="landing-section landing-anchor-target">
+    <div class="landing-section-head">
+        <span class="landing-eyebrow">Features</span>
+        <h2 class="landing-title">Everything you need in one modern finance workspace</h2>
+    </div>
+    <div class="row g-4 mt-1">
+        <div class="col-md-6 col-xl-4">
+            <div class="surface-card landing-card h-100">
+                <div class="landing-icon landing-icon-primary"><i class="bi bi-receipt"></i></div>
+                <h3 class="landing-card-title">Expense tracking</h3>
+                <p class="landing-card-copy">Capture every transaction with categories, notes, and a clean timeline of your spending habits.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="surface-card landing-card h-100">
+                <div class="landing-icon landing-icon-danger"><i class="bi bi-bell"></i></div>
+                <h3 class="landing-card-title">Budget alerts</h3>
+                <p class="landing-card-copy">Stay ahead of overspending with timely warnings when you approach or exceed your monthly budget.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="surface-card landing-card h-100">
+                <div class="landing-icon landing-icon-success"><i class="bi bi-robot"></i></div>
+                <h3 class="landing-card-title">AI suggestions</h3>
+                <p class="landing-card-copy">Receive personalized advice based on patterns, categories, and recurring expenses in your account.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="surface-card landing-card h-100">
+                <div class="landing-icon landing-icon-primary"><i class="bi bi-bar-chart-line"></i></div>
+                <h3 class="landing-card-title">Reports</h3>
+                <p class="landing-card-copy">Understand monthly performance with visual summaries, analytics charts, and export-ready reports.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="surface-card landing-card h-100">
+                <div class="landing-icon landing-icon-warning"><i class="bi bi-camera"></i></div>
+                <h3 class="landing-card-title">OCR scanning</h3>
+                <p class="landing-card-copy">Upload receipts and bills to speed up expense entry with smart autofill support when available.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="surface-card landing-card h-100">
+                <div class="landing-icon landing-icon-success"><i class="bi bi-bullseye"></i></div>
+                <h3 class="landing-card-title">Savings goals</h3>
+                <p class="landing-card-copy">Build momentum with visible progress, saving targets, and goal-focused planning suggestions.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section landing-ai-band overflow-hidden position-relative">
+    <div class="landing-ai-glow" aria-hidden="true"></div>
+    <div class="row align-items-center g-4 position-relative">
+        <div class="col-lg-7">
+            <span class="landing-eyebrow">AI highlight</span>
+            <h2 class="landing-title text-white">Smarter Financial Decisions with AI</h2>
+            <p class="landing-copy text-white-50 mb-0">Go beyond tracking. TeckWay MoneyTracker transforms your expenses into meaningful insights, recurring pattern detection, spending alerts, and action-oriented advice you can actually use.</p>
+        </div>
+        <div class="col-lg-5">
+            <div class="surface-card landing-ai-card">
+                <div class="landing-mini-stat">
+                    <span>AI finds</span>
+                    <strong>spending patterns and recurring habits</strong>
+                </div>
+                <div class="landing-mini-stat">
+                    <span>AI suggests</span>
+                    <strong>practical weekly savings actions</strong>
+                </div>
+                <div class="landing-mini-stat">
+                    <span>AI supports</span>
+                    <strong>clearer planning with less guesswork</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section landing-section-soft landing-anchor-target">
+    <div class="landing-section-head text-center mx-auto">
+        <span class="landing-eyebrow">Benefits</span>
+        <h2 class="landing-title">Built to create better money outcomes</h2>
+    </div>
+    <div class="row g-4 mt-1">
+        <div class="col-md-4">
+            <div class="surface-card benefit-card h-100">
+                <h3 class="landing-card-title">Save money</h3>
+                <p class="landing-card-copy">Spot avoidable spending, reduce leaks, and build small habits that compound over time.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="surface-card benefit-card h-100">
+                <h3 class="landing-card-title">Avoid overspending</h3>
+                <p class="landing-card-copy">Use budget progress, alerts, and category-level visibility to stay in control before it is too late.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="surface-card benefit-card h-100">
+                <h3 class="landing-card-title">Plan better</h3>
+                <p class="landing-card-copy">Make smarter month-to-month decisions with reports, goals, forecasts, and AI-supported insights.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="landing-section landing-cta text-center">
+    <span class="landing-eyebrow">Ready to begin?</span>
+    <h2 class="landing-title">Start tracking now</h2>
+    <p class="landing-copy mx-auto">Build clarity, confidence, and smarter financial habits with one clean money workspace.</p>
+    {% if user.is_authenticated %}
+        <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg rounded-pill px-4 mt-2">Open Dashboard</a>
+    {% else %}
+        <a href="{% url 'signup' %}" class="btn btn-light btn-lg rounded-pill px-4 mt-2">Start Tracking Now</a>
+    {% endif %}
+</section>
+{% endblock %}

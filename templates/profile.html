@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Profile | FinSmart{% endblock %}
+{% block page_heading %}Profile Overview{% endblock %}
+{% block page_subheading %}Manage your identity, profile photo, and a quick snapshot of your finance performance.{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-xl-4">
+        <div class="surface-card p-4 interactive-card h-100 text-center">
+            {% if user.profile.profile_picture %}
+                <img src="{{ user.profile.profile_picture.url }}" class="profile-page-image mb-3" alt="Profile">
+            {% else %}
+                <div class="profile-page-placeholder mx-auto mb-3"><i class="bi bi-person"></i></div>
+            {% endif %}
+            <h3 class="section-title mb-1">{{ user.username }}</h3>
+            <p class="section-subtitle mb-3">{{ user.email }}</p>
+            <div class="small text-muted">Joined on {{ user.date_joined|date:"d M Y" }}</div>
+        </div>
+    </div>
+    <div class="col-xl-8">
+        <div class="row g-4 mb-4">
+            <div class="col-md-4"><div class="surface-card p-4 interactive-card"><div class="metric-label">Total Expenses</div><div class="metric-value">{{ total_expenses_count }}</div></div></div>
+            <div class="col-md-4"><div class="surface-card p-4 interactive-card"><div class="metric-label">Monthly Budget</div><div class="metric-value">Rs. {{ monthly_budget }}</div></div></div>
+            <div class="col-md-4"><div class="surface-card p-4 interactive-card"><div class="metric-label">Remaining Balance</div><div class="metric-value">Rs. {{ remaining_balance }}</div></div></div>
+        </div>
+        <div class="surface-card p-4 interactive-card mb-4">
+            <h3 class="section-title mb-3">Profile Stats</h3>
+            <div class="row g-3">
+                <div class="col-md-4"><div class="stat-mini"><span>Total Spend</span><strong>Rs. {{ total_expenses_sum }}</strong></div></div>
+                <div class="col-md-4"><div class="stat-mini"><span>Highest Category</span><strong>{{ highest_category }}</strong></div></div>
+                <div class="col-md-4"><div class="stat-mini"><span>Saving Streak</span><strong>{{ user.profile.saving_streak }} days</strong></div></div>
+            </div>
+        </div>
+        <div class="surface-card p-4 interactive-card">
+            <h3 class="section-title mb-3">Edit Profile</h3>
+            <form method="post" enctype="multipart/form-data" class="form-grid">
+                {% csrf_token %}
+                {{ user_form.as_p }}
+                {{ profile_form.as_p }}
+                <button type="submit" class="btn-soft-primary">Save Profile Changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

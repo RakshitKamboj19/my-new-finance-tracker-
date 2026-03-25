@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Settings | FinSmart{% endblock %}
+{% block page_heading %}Settings & Security{% endblock %}
+{% block page_subheading %}Control your app experience, dark mode, and account password from one place.{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-xl-5">
+        <div class="surface-card p-4 interactive-card">
+            <h3 class="section-title mb-3">Preferences</h3>
+            <form method="post" class="form-grid">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="preferences">
+                <div class="form-check form-switch mb-3">
+                    {{ profile_settings_form.dark_mode }}
+                    <label class="form-check-label ms-2" for="id_dark_mode">Enable dark mode</label>
+                </div>
+                <button type="submit" class="btn-soft-primary">Save Preferences</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-xl-7">
+        <div class="surface-card p-4 interactive-card">
+            <h3 class="section-title mb-3">Change Password</h3>
+            <form method="post" class="form-grid">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="password">
+                {{ password_form.as_p }}
+                <button type="submit" class="btn-soft-success">Update Password</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

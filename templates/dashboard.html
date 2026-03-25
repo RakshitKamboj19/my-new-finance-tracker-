@@ -1,0 +1,300 @@
+﻿{% extends "base.html" %}
+
+{% block page_heading %}TeckWay MoneyTracker{% endblock %}
+{% block page_subheading %}Track with TeckWay{% endblock %}
+{% block mobile_page_heading %}TeckWay MoneyTracker{% endblock %}
+{% block mobile_page_subheading %}Track with TeckWay{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <p class="section-subtitle">Smart Financial Decisions Powered by AI</p>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-xl-4">
+        <div class="surface-card metric-card p-4 h-100 interactive-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="metric-label">Total Spending</div>
+                    <div class="metric-value">Rs. {{ total_spending }}</div>
+                    <div class="small text-muted mt-2">Current month spend</div>
+                </div>
+                <div class="metric-icon metric-primary"><i class="bi bi-cash-coin"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="surface-card metric-card p-4 h-100 interactive-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="metric-label">Monthly Budget</div>
+                    <div class="metric-value">Rs. {{ budget.monthly_limit }}</div>
+                    <div class="small text-muted mt-2">Configured monthly limit</div>
+                </div>
+                <div class="metric-icon metric-warning"><i class="bi bi-wallet2"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <div class="surface-card metric-card p-4 h-100 interactive-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="metric-label">Remaining Budget</div>
+                    <div class="metric-value {% if remaining_budget < 0 %}text-danger{% else %}text-success{% endif %}">Rs. {{ remaining_budget }}</div>
+                    <div class="small text-muted mt-2">{% if remaining_budget < 0 %}Overspending detected{% else %}Healthy balance left{% endif %}</div>
+                </div>
+                <div class="metric-icon {% if remaining_budget < 0 %}metric-danger{% else %}metric-success{% endif %}"><i class="bi {% if remaining_budget < 0 %}bi-graph-down-arrow{% else %}bi-graph-up-arrow{% endif %}"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-8">
+        <div class="surface-card p-4 h-100 interactive-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h3 class="section-title mb-1">Category Comparison</h3>
+                    <p class="section-subtitle">Where your money goes this month.</p>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="{% url 'export_csv' %}" class="btn-outline-modern"><i class="bi bi-download me-2"></i>CSV</a>
+                    <a href="{% url 'export_excel' %}" class="btn-outline-modern"><i class="bi bi-file-earmark-spreadsheet me-2"></i>Excel</a>
+                </div>
+            </div>
+            <div style="height: 320px;"><canvas id="expenseChart"></canvas></div>
+        </div>
+    </div>
+    <div class="col-xl-4" id="ai-insights">
+        <div class="surface-card ai-highlight p-4 h-100 interactive-card">
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                <div>
+                    <h3 class="section-title mb-1">AI Financial Insights <span class="ms-1">&#129302;</span></h3>
+                    <p class="section-subtitle">Actionable advice, reports, and spending pattern summaries.</p>
+                </div>
+                <span class="insight-badge {{ ai_status.badge_class }}">{{ ai_status.label }}</span>
+            </div>
+            <div class="ai-advice-box mb-3">
+                {% if latest_advice %}
+                    {{ latest_advice.advice_text|linebreaksbr }}
+                {% else %}
+                    <div class="text-muted">No advice generated yet. Generate your first AI insight below.</div>
+                {% endif %}
+            </div>
+            <form method="post" action="{% url 'generate_ai_advice' %}" id="aiAdviceForm">
+                {% csrf_token %}
+                <button type="submit" class="btn-soft-success w-100" id="aiAdviceButton">
+                    <span class="default-label"><i class="bi bi-stars me-2"></i>Generate AI Advice</span>
+                    <span class="loading-label d-none"><span class="spinner-border spinner-border-sm me-2"></span>Generating...</span>
+                </button>
+            </form>
+            <p class="small text-muted mt-3 mb-0">{{ ai_status.message }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="surface-card p-4 interactive-card h-100">
+            <h3 class="section-title mb-1">Monthly Trend</h3>
+            <p class="section-subtitle mb-3">Track how spending moves over recent months.</p>
+            <div style="height: 280px;"><canvas id="trendChart"></canvas></div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="surface-card p-4 interactive-card h-100">
+            <h3 class="section-title mb-1">Weekly Spending</h3>
+            <p class="section-subtitle mb-3">A quick view of the last 7 days.</p>
+            <div style="height: 280px;"><canvas id="weeklyChart"></canvas></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-4">
+        <div class="surface-card p-4 interactive-card h-100">
+            <h3 class="section-title mb-3">Smart Notifications</h3>
+            {% if notifications %}
+                <div class="list-group list-group-flush">
+                    {% for notification in notifications %}
+                        <div class="list-group-item px-0 border-0 border-bottom pb-3 mb-3">
+                            <div class="fw-bold">{{ notification.title }}</div>
+                            <div class="small text-muted">{{ notification.message }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state py-4">No budget alerts right now. Nice work.</div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="surface-card p-4 interactive-card h-100">
+            <h3 class="section-title mb-3">Recurring Expenses</h3>
+            <div class="small text-muted mb-3">Estimated recurring monthly cost: <strong>Rs. {{ recurring_total }}</strong></div>
+            {% if recurring_expenses %}
+                {% for item in recurring_expenses %}
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                        <div>
+                            <div class="fw-semibold">{{ item.label }}</div>
+                            <div class="small text-muted">{{ item.category }} - {{ item.count }} times</div>
+                        </div>
+                        <div class="fw-bold">Rs. {{ item.amount }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state py-4">No recurring expense pattern detected yet.</div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="surface-card p-4 interactive-card h-100">
+            <h3 class="section-title mb-3">AI Spending Patterns</h3>
+            <ul class="list-clean">
+                {% for pattern in spending_patterns %}
+                    <li><i class="bi bi-check-circle text-success"></i><span>{{ pattern }}</span></li>
+                {% endfor %}
+            </ul>
+            <hr>
+            <h4 class="section-title mb-2">Beginner Investment Tips</h4>
+            <ul class="list-clean mb-0">
+                {% for tip in investment_suggestions %}
+                    <li><i class="bi bi-graph-up text-primary"></i><span>{{ tip }}</span></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-8">
+        <div class="surface-card p-4 interactive-card">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+                <div>
+                    <h3 class="section-title mb-1">Recent Transactions</h3>
+                    <p class="section-subtitle">Modern view of the latest expense activity.</p>
+                </div>
+                <a href="{% url 'add_expense' %}" class="btn-soft-primary"><i class="bi bi-plus-lg me-2"></i>Add Expense</a>
+            </div>
+            {% if expenses %}
+                <div class="table-responsive">
+                    <table class="table table-modern align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in expenses %}
+                                <tr>
+                                    <td>{{ expense.date }}</td>
+                                    <td><span class="category-pill">{{ expense.category }}</span></td>
+                                    <td>{{ expense.description|default:"-" }}</td>
+                                    <td class="fw-bold">Rs. {{ expense.amount }}</td>
+                                    <td class="text-end">
+                                        <a href="{% url 'edit_expense' expense.pk %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">Edit</a>
+                                        <form method="post" action="{% url 'delete_expense' expense.pk %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="fs-2 mb-2"><i class="bi bi-wallet"></i></div>
+                    <div class="fw-bold mb-2">No expenses yet. Start tracking your spending!</div>
+                    <a href="{% url 'add_expense' %}" class="btn-soft-primary mt-2">Add First Expense</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="surface-card p-4 mb-4 interactive-card">
+            <h3 class="section-title mb-3">Update Monthly Budget</h3>
+            <p class="section-subtitle mb-3">Set or adjust your monthly limit here.</p>
+            <form method="post" class="form-grid">
+                {% csrf_token %}
+                {{ budget_form.as_p }}
+                <button type="submit" class="btn-soft-primary w-100"><i class="bi bi-check2-circle me-2"></i>Save Budget</button>
+            </form>
+        </div>
+        <div class="surface-card p-4 mb-4 interactive-card">
+            <h3 class="section-title mb-3">Savings Goals</h3>
+            {% if goals %}
+                {% for goal in goals %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between"><span class="fw-semibold">{{ goal.goal_name }}</span><span>{{ goal.progress_percentage }}%</span></div>
+                        <div class="progress mt-2" style="height: 10px;"><div class="progress-bar bg-success" role="progressbar" style="width: {{ goal.progress_percentage }}%"></div></div>
+                    </div>
+                {% endfor %}
+                <a href="{% url 'goals' %}" class="btn-outline-modern w-100 text-center">Manage Goals</a>
+            {% else %}
+                <div class="empty-state py-4">No goals created yet. Start one to track saving progress.</div>
+            {% endif %}
+        </div>
+        <div class="surface-card p-4 interactive-card">
+            <h3 class="section-title mb-3">Achievements</h3>
+            {% if achievements %}
+                {% for achievement in achievements %}
+                    <div class="d-flex gap-3 align-items-start border-bottom pb-3 mb-3">
+                        <div class="metric-icon metric-warning"><i class="bi {{ achievement.icon }}"></i></div>
+                        <div>
+                            <div class="fw-semibold">{{ achievement.badge_name }}</div>
+                            <div class="small text-muted">{{ achievement.message }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state py-4">Your first badge will appear as you use the app.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const chartLabels = {{ chart_labels|safe }};
+const chartValues = {{ chart_values|safe }};
+const lineLabels = {{ line_labels|safe }};
+const lineValues = {{ line_values|safe }};
+const weeklyLabels = {{ weekly_labels|safe }};
+const weeklyValues = {{ weekly_values|safe }};
+
+new Chart(document.getElementById('expenseChart'), {
+    type: 'bar',
+    data: { labels: chartLabels, datasets: [{ label: 'Category Spending', data: chartValues, backgroundColor: ['#2563eb','#0f9f6e','#f2b84b','#df5b57','#94a3b8'], borderRadius: 10 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+});
+
+new Chart(document.getElementById('trendChart'), {
+    type: 'line',
+    data: { labels: lineLabels, datasets: [{ label: 'Monthly trend', data: lineValues, borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.12)', fill: true, tension: 0.35 }] },
+    options: { responsive: true, maintainAspectRatio: false }
+});
+
+new Chart(document.getElementById('weeklyChart'), {
+    type: 'bar',
+    data: { labels: weeklyLabels, datasets: [{ label: 'Weekly spend', data: weeklyValues, backgroundColor: '#0f9f6e', borderRadius: 8 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+});
+
+const aiAdviceForm = document.getElementById('aiAdviceForm');
+const aiAdviceButton = document.getElementById('aiAdviceButton');
+if (aiAdviceForm && aiAdviceButton) {
+    aiAdviceForm.addEventListener('submit', function () {
+        aiAdviceButton.setAttribute('disabled', 'disabled');
+        aiAdviceButton.querySelector('.default-label').classList.add('d-none');
+        aiAdviceButton.querySelector('.loading-label').classList.remove('d-none');
+    });
+}
+</script>
+{% endblock %}

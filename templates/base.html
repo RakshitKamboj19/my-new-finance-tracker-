@@ -1,0 +1,202 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="{% if user.is_authenticated and user.profile.dark_mode %}dark{% else %}light{% endif %}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Rakshit Kamboj">
+    <title>TeckWay MoneyTracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/app.css?v=20260325-nav1" rel="stylesheet">
+    <style>body { font-family: 'Manrope', sans-serif; }</style>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <div class="app-shell d-lg-flex">
+            <aside class="sidebar offcanvas-lg offcanvas-start" tabindex="-1" id="appSidebar" aria-labelledby="appSidebarLabel">
+                <div class="sidebar-inner d-flex flex-column offcanvas-body">
+                    <div class="sidebar-brand d-flex align-items-center justify-content-between gap-3">
+                        <div class="d-flex align-items-center gap-3 min-w-0">
+                            <div class="brand-mark flex-shrink-0"><i class="bi bi-graph-up-arrow"></i></div>
+                            <div class="brand-copy">
+                                <h4 id="appSidebarLabel">TeckWay MoneyTracker</h4>
+                                <p>Track with TeckWay</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close d-lg-none flex-shrink-0" data-bs-dismiss="offcanvas" data-bs-target="#appSidebar" aria-label="Close"></button>
+                    </div>
+
+                    <nav class="sidebar-nav">
+                        <a class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+                        <a class="sidebar-link {% if request.resolver_match.url_name == 'add_expense' %}active{% endif %}" href="{% url 'add_expense' %}"><i class="bi bi-plus-circle"></i><span>Add Expense</span></a>
+                        <a class="sidebar-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}" href="{% url 'reports' %}"><i class="bi bi-file-earmark-bar-graph"></i><span>Reports</span></a>
+                        <a class="sidebar-link {% if request.resolver_match.url_name == 'goals' or request.resolver_match.url_name == 'edit_goal' %}active{% endif %}" href="{% url 'goals' %}"><i class="bi bi-bullseye"></i><span>Goals</span></a>
+                        <a class="sidebar-link {% if request.resolver_match.url_name == 'chat' %}active{% endif %}" href="{% url 'chat' %}"><i class="bi bi-chat-dots"></i><span>AI Chat</span></a>
+                        <a class="sidebar-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}"><i class="bi bi-person-circle"></i><span>Profile</span></a>
+                        <a class="sidebar-link {% if request.resolver_match.url_name == 'settings' %}active{% endif %}" href="{% url 'settings' %}"><i class="bi bi-sliders"></i><span>Settings</span></a>
+                        <form method="post" action="{% url 'logout' %}" class="mt-2">
+                            {% csrf_token %}
+                            <button type="submit" class="sidebar-link border-0 bg-transparent w-100 text-start"><i class="bi bi-box-arrow-right"></i><span>Logout</span></button>
+                        </form>
+                    </nav>
+
+                    <div class="sidebar-footer d-none d-lg-block">
+                        <div class="sidebar-tip">
+                            <div class="fw-bold mb-2">Track with TeckWay</div>
+                            <div class="small opacity-75">Smart Financial Decisions Powered by AI</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="content-area">
+                <div class="mobile-header d-lg-none mb-3">
+                    <div class="surface-card p-3 d-flex align-items-center justify-content-between gap-3">
+                        <button class="mobile-menu-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar">
+                            <i class="bi bi-list"></i>
+                        </button>
+                        <div class="mobile-brand d-flex align-items-center gap-2">
+                            <div class="brand-mark brand-mark-sm"><i class="bi bi-graph-up-arrow"></i></div>
+                            <span class="fw-bold">TeckWay MoneyTracker</span>
+                        </div>
+                        <a href="{% url 'profile' %}" class="mobile-avatar-link">
+                            {% if user.profile.profile_picture %}
+                                <img src="{{ user.profile.profile_picture.url }}" alt="Profile" class="topbar-avatar-image">
+                            {% else %}
+                                <div class="profile-avatar profile-avatar-sm"><i class="bi bi-person"></i></div>
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="topbar d-none d-lg-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                    <div class="topbar-title">
+                        <h1>{% block page_heading %}TeckWay MoneyTracker{% endblock %}</h1>
+                        <p>{% block page_subheading %}Track with TeckWay{% endblock %}</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 flex-wrap justify-content-end">
+                        <a href="{% url 'profile' %}" class="profile-chip text-decoration-none">
+                            <div>
+                                <div class="small text-muted">Logged in as</div>
+                                <div class="fw-bold">{{ user.username }}</div>
+                            </div>
+                            {% if user.profile.profile_picture %}
+                                <img src="{{ user.profile.profile_picture.url }}" alt="Profile" class="topbar-avatar-image">
+                            {% else %}
+                                <div class="profile-avatar"><i class="bi bi-person"></i></div>
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mobile-page-intro d-lg-none mb-3">
+                    <h1>{% block mobile_page_heading %}{% block mobile_heading_fallback %}TeckWay MoneyTracker{% endblock %}{% endblock %}</h1>
+                    <p>{% block mobile_page_subheading %}{% block mobile_subheading_fallback %}Track with TeckWay{% endblock %}{% endblock %}</p>
+                </div>
+
+                <section class="page-section mt-0 mt-lg-4">
+    {% else %}
+        <header class="public-nav-wrap">
+            <nav id="publicNavbar" class="navbar navbar-expand-lg public-navbar fixed-top">
+                <div class="container">
+                    <a class="navbar-brand public-brand" href="{% url 'home' %}#home">
+                        <span class="brand-mark brand-mark-sm"><i class="bi bi-graph-up-arrow"></i></span>
+                        <span>TeckWay MoneyTracker</span>
+                    </a>
+                    <button class="navbar-toggler public-navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#publicNavbarMenu" aria-controls="publicNavbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="publicNavbarMenu">
+                        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2 public-nav-links">
+                            <li class="nav-item"><a class="nav-link public-nav-link" href="{% url 'home' %}#home" data-section-link="home">Home</a></li>
+                            <li class="nav-item"><a class="nav-link public-nav-link" href="{% url 'home' %}#features" data-section-link="features">Features</a></li>
+                            <li class="nav-item"><a class="nav-link public-nav-link" href="{% url 'home' %}#contact" data-section-link="contact">Contact</a></li>
+                            <li class="nav-item"><a class="nav-link public-nav-link public-login-link" href="{% url 'login' %}">Login</a></li>
+                            <li class="nav-item ms-lg-2"><a class="btn public-signup-btn" href="{% url 'signup' %}">Create Account</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <main class="container py-5 public-main">
+    {% endif %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show rounded-4 border-0 shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    {% if user.is_authenticated %}
+                </section>
+            </main>
+        </div>
+    {% else %}
+        </main>
+    {% endif %}
+
+    <footer class="text-center mt-5 p-3 small text-muted">
+        © 2026 TeckWay MoneyTracker | Developed by Rakshit Kamboj
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navbar = document.getElementById('publicNavbar');
+            if (!navbar) {
+                return;
+            }
+
+            const setNavbarState = function () {
+                if (window.scrollY > 12) {
+                    navbar.classList.add('is-scrolled');
+                } else {
+                    navbar.classList.remove('is-scrolled');
+                }
+            };
+
+            setNavbarState();
+            window.addEventListener('scroll', setNavbarState, { passive: true });
+
+            const sectionLinks = document.querySelectorAll('[data-section-link]');
+            const sectionIds = Array.from(sectionLinks)
+                .map(function (link) { return link.getAttribute('data-section-link'); })
+                .filter(Boolean);
+            const sections = sectionIds
+                .map(function (id) { return document.getElementById(id); })
+                .filter(Boolean);
+
+            if (sections.length) {
+                const observer = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            sectionLinks.forEach(function (link) {
+                                const active = link.getAttribute('data-section-link') === entry.target.id;
+                                link.classList.toggle('active', active);
+                            });
+                        }
+                    });
+                }, {
+                    rootMargin: '-35% 0px -45% 0px',
+                    threshold: 0.1
+                });
+
+                sections.forEach(function (section) {
+                    observer.observe(section);
+                });
+            }
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+
