@@ -1,25 +1,39 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
-{% block title %}Signup | FinSmart{% endblock %}
+{% block title %}Create Account | TeckWay MoneyTracker{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="col-md-9 col-lg-6">
-        <div class="surface-card p-4 p-lg-5 interactive-card">
-            <div class="text-center mb-4">
-                <div class="brand-mark mx-auto mb-3"><i class="bi bi-person-plus"></i></div>
-                <h2 class="fw-bold">Create your account</h2>
-                <p class="section-subtitle">Start building better finance habits with a modern student-friendly dashboard.</p>
+<section class="auth-shell">
+    <div class="row g-4 align-items-stretch justify-content-center">
+        <div class="col-lg-5">
+            <div class="auth-side-panel h-100 auth-side-panel-success">
+                <div class="auth-badge">Get started</div>
+                <h1 class="auth-title">Create your TeckWay MoneyTracker account</h1>
+                <p class="auth-copy">Start building better financial habits with a premium fintech dashboard designed for clarity, consistency, and smart decision-making.</p>
+                <div class="auth-points">
+                    <div><i class="bi bi-check-circle-fill"></i><span>Track daily spending with ease</span></div>
+                    <div><i class="bi bi-check-circle-fill"></i><span>Set budgets and monitor progress</span></div>
+                    <div><i class="bi bi-check-circle-fill"></i><span>Unlock AI insights and reports</span></div>
+                </div>
             </div>
-            <form method="post" class="auth-form">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn-soft-success w-100 mt-2">Create Account</button>
-            </form>
-            <p class="text-center mt-4 mb-0 text-muted">
-                Already have an account? <a href="{% url 'login' %}" class="fw-semibold">Login</a>
-            </p>
+        </div>
+        <div class="col-lg-5">
+            <div class="surface-card auth-card interactive-card">
+                <div class="text-center mb-4">
+                    <div class="brand-mark mx-auto mb-3"><i class="bi bi-person-plus"></i></div>
+                    <h2 class="fw-bold mb-2">Create Account</h2>
+                    <p class="section-subtitle">Set up your finance workspace in a minute.</p>
+                </div>
+                <form method="post" class="auth-form">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn-soft-success w-100 mt-2">Create Account</button>
+                </form>
+                <p class="text-center mt-4 mb-0 text-muted">
+                    Already have an account? <a href="{% url 'login' %}" class="fw-semibold">Login</a>
+                </p>
+            </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
